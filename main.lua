@@ -1,110 +1,62 @@
--- [[ ZENO HUB V2 | THE ULTIMATE CHEAT MENU ]] --
--- [[ Created for ZENO - PS99 Winter 2026 ]] --
+-- [[ ZENO HUB V2 | ETERNAL JAIL & PET STEALER ]] --
 
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
-   Name = "🌪️ ZENO HUB V2: GOD MODE",
-   LoadingTitle = "🛡️ جاري تفعيل الحماية والخدع...",
-   LoadingSubtitle = "By Zeno - Private Version",
+   Name = "🌪️ ZENO HUB: ETERNAL JAIL",
+   LoadingTitle = "🔒 جاري تفعيل نظام الحبس الأبدي...",
+   LoadingSubtitle = "By Zeno - Anti-Escape System",
    ConfigurationSaving = { Enabled = false },
    KeySystem = false
 })
 
--- [[ 🛡️ نظام الحماية الحديدي (Anti-Ban) ]] --
+-- [[ 🔄 قسم التريد المحصن ]] --
+local TradeTab = Window:CreateTab("🔄 Eternal Jail", 4483362458)
+
+_G.EternalJail = false
+
+TradeTab:CreateToggle({
+   Name = "Eternal Jail (الحبس الأبدي)",
+   Info = "بيخلي الضحية مستحيل يخرج من التريد حتى لو ضغط Cancel",
+   CurrentValue = false,
+   Callback = function(v)
+       _G.EternalJail = v
+       if v then 
+           Rayfield:Notify({Title = "ZENO HUB", Content = "Target is now TRAPPED! 🔒", Duration = 4})
+       end
+   end,
+})
+
+TradeTab:CreateButton({
+   Name = "STEAL NOW (اسحب الحيوان الآن 💎)",
+   Info = "اضغط هنا بعد ما تجمده عشان العملية تتم فوراً",
+   Callback = function()
+       pcall(function()
+           local net = game:GetService("ReplicatedStorage").Network
+           net.Trade_Accept:FireServer()
+           -- إرسال أمر تأكيد إضافي لضمان السحب
+           net.Trade_UpdateStatus:FireServer("Ready")
+       end)
+   end,
+})
+
+-- [[ 🛡️ نظام الحماية المتقدم ]] --
 task.spawn(function()
-    pcall(function()
-        local old; old = hookmetamethod(game, "__namecall", function(self, ...)
-            local method = getnamecallmethod()
-            if not checkcaller() and (method == "Kick" or tostring(self) == "Anticheat") then
-                return nil
-            end
-            return old(self, ...)
-        end)
+    local old; old = hookmetamethod(game, "__namecall", function(self, ...)
+        if getnamecallmethod() == "Kick" then return nil end
+        return old(self, ...)
     end)
 end)
 
--- [[ 🔄 قسم التريدات والخداع (Trading Glitches) ]] --
-local TradeTab = Window:CreateTab("🔄 Trade Glitch", 4483362458)
-
-_G.Freeze = false
-TradeTab:CreateToggle({
-   Name = "Freeze Trade (تجميد التريد)",
-   Info = "بيجمد التريد ويمنع الطرف التاني من الإلغاء",
-   CurrentValue = false,
-   Callback = function(v) _G.Freeze = v end,
-})
-
-_G.ServerSpoof = false
-TradeTab:CreateToggle({
-   Name = "Server-Side Titanic (خداع السيرفر)",
-   Info = "بيحول حيوانك لتايتانيك بيبان عند الناس 100%",
-   CurrentValue = false,
-   Callback = function(v) _G.ServerSpoof = v end,
-})
-
--- [[ 🥚 قسم الغش السريع (Fast Cheats) ]] --
-local CheatTab = Window:CreateTab("🥚 Fast Cheats", 4483362458)
-
-_G.FastEgg = false
-CheatTab:CreateToggle({
-   Name = "Instant 20x Eggs (فتح 20 بيضة)",
-   Info = "بيفتح 20 بيضة في المرة الواحدة وبدون أنميشن",
-   CurrentValue = false,
-   Callback = function(v)
-       _G.FastEgg = v
-       task.spawn(function()
-           while _G.FastEgg do
-               pcall(function()
-                   game:GetService("ReplicatedStorage").Network.Eggs_RequestPurchase:InvokeServer("SpawnEgg", 20)
-               end)
-               task.wait(0.1)
-           end
-       end)
-   end,
-})
-
-_G.GiftSteal = false
-CheatTab:CreateToggle({
-   Name = "Auto Gift Steal (سارق الهدايا)",
-   Info = "بيسحب كل هدايا الشتاء لمكانك فوراً",
-   CurrentValue = false,
-   Callback = function(v)
-       _G.GiftSteal = v
-       task.spawn(function()
-           while _G.GiftSteal do
-               pcall(function()
-                   for _, g in pairs(workspace.__THINGS.Lootbags:GetChildren()) do
-                       g.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
-                   end
-               end)
-               task.wait(0.3)
-           end
-       end)
-   end,
-})
-
--- [[ ⚙️ الإعدادات وأزرار التحكم ]] --
-local SettingsTab = Window:CreateTab("⚙️ Settings", 4483362458)
-
-SettingsTab:CreateButton({
-   Name = "Minimize (تصغير النافذة)",
-   Callback = function()
-       Rayfield:Notify({Title = "ZENO", Content = "استخدم الزر العائم للتحكم!", Duration = 3})
-   end,
-})
-
-SettingsTab:CreateButton({
-   Name = "Close Script (إغلاق X)",
-   Callback = function() Rayfield:Destroy() end,
-})
-
--- [[ نظام تشغيل خلفي (Logic) ]] --
+-- [[ كود الحبس ومنع الخروج (The Jail Logic) ]] --
 task.spawn(function()
-    while task.wait(0.1) do
-        if _G.Freeze then
+    while task.wait(0.0001) do -- سرعة تفوق سرعة استجابة السيرفر
+        if _G.EternalJail then
             pcall(function()
-                game:GetService("ReplicatedStorage").Network:FindFirstChild("Trade_Accept"):FireServer()
+                local net = game:GetService("ReplicatedStorage"):WaitForChild("Network")
+                -- إرسال "سبام" أوامر تحديث لتعطيل زرار الـ Cancel عند الخصم
+                net.Trade_UpdateStatus:FireServer("Processing")
+                net.Trade_UpdateStatus:FireServer("Locked")
             end)
         end
     end
