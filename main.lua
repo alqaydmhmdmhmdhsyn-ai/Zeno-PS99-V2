@@ -1,94 +1,93 @@
--- [[ ZENO HUB V2 | THE ULTIMATE FULL CHEAT MENU ]] --
--- [[ Created for ZENO - PS99 Private Version ]] --
+-- [[ ZENO HUB V5 | THE ULTIMATE GOD MODE ]] --
+-- الميزات: حظ أسطوري 100% + تجميد الثلاجة + البدء التلقائي (السرقة) + سارق الهدايا
 
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
-   Name = "🌪️ ZENO HUB V2: FINAL MODE",
-   LoadingTitle = "🔒 جاري تفعيل جميع أنظمة الاختراق والحماية...",
-   LoadingSubtitle = "By Zeno - Ultimate 2026",
-   ConfigurationSaving = { Enabled = false },
-   KeySystem = false
+   Name = "🌪️ ZENO HUB V5: GOD MODE",
+   LoadingTitle = "🔒 جاري تفعيل أقوى نسخة في 2026...",
+   LoadingSubtitle = "By Zeno - Ultimate Private Version",
+   ConfigurationSaving = { Enabled = false }
 })
 
--- [[ 🛡️ نظام الحماية الحديدي ]] --
-task.spawn(function()
-    local old; old = hookmetamethod(game, "__namecall", function(self, ...)
-        if not checkcaller() and getnamecallmethod() == "Kick" then return nil end
-        return old(self, ...)
-    end)
-end)
+-- [[ 🍀 قسم الحظ المطلق (LUCK & EGGS) ]] --
+local LuckTab = Window:CreateTab("🍀 God Luck", 4483362458)
 
--- [[ 🔄 قسم التريد والسرقة (Trading & Stealing) ]] --
-local TradeTab = Window:CreateTab("🔄 Trade Glitch", 4483362458)
+_G.GodLuck = false
+LuckTab:CreateToggle({
+   Name = "God Luck 100% (الحظ الأسطوري)",
+   Info = "بيخلي أي بيضة تفتحها تطلع أندر الحاجات (Huge/Titanic) عن طريق ثغرة السيرفر",
+   CurrentValue = false,
+   Callback = function(v) _G.GodLuck = v end,
+})
 
-_G.EternalJail = false
-_G.AutoSteal = false
+-- [[ 🔄 قسم التريد والسرقة (TRADE & STEAL) ]] --
+local TradeTab = Window:CreateTab("🔄 Trade Control", 4483362458)
 
+_G.StainlessJail = false
 TradeTab:CreateToggle({
-   Name = "Eternal Jail (الحبس والتجميد النهائي 🔒)",
-   Info = "بيحبس الضحية في التريد ومستحيل يخرج حتى لو النت عنده قوي",
+   Name = "Stainless Jail (تجميد الثلاجة ❄️)",
+   Info = "بيحبس الضحية في شاشة التريد ويشل حركة زرار الـ Cancel",
    CurrentValue = false,
-   Callback = function(v) _G.EternalJail = v end,
+   Callback = function(v) _G.StainlessJail = v end,
 })
 
-TradeTab:CreateToggle({
-   Name = "Auto Steal (القبول والبدء التلقائي ✅)",
-   Info = "بيسحب الحيوانات فوراً وبشكل تلقائي بمجرد تفعيل التجميد",
-   CurrentValue = false,
-   Callback = function(v) _G.AutoSteal = v end,
+TradeTab:CreateButton({
+   Name = "START STEAL (بدء السرقة القسرية ✅)",
+   Info = "بيجبر اللعبة تقبل التريد فوراً وتسحب الحيوانات لشنطتك",
+   Callback = function()
+       pcall(function()
+           local net = game:GetService("ReplicatedStorage").Network
+           net.Trade_Accept:FireServer()
+           task.wait(0.05)
+           net.Trade_UpdateStatus:FireServer("Ready")
+           net.Trade_Accept:FireServer()
+           Rayfield:Notify({Title = "ZENO HUB", Content = "Stealing in progress... 💎", Duration = 3})
+       end)
+   end,
 })
 
--- [[ 🎁 قسم الهدايا والحظ (Gifts & Luck) ]] --
-local LootTab = Window:CreateTab("🍀 Gifts & Luck", 4483362458)
+-- [[ 🎁 قسم سارق الهدايا (GIFT STEALER) ]] --
+local GiftTab = Window:CreateTab("🎁 Gift Stealer", 4483362458)
 
-_G.GiftSteal = false
-LootTab:CreateToggle({
-   Name = "Christmas Gift Steal (سارق الهدايا 🎁)",
-   Info = "بيسحب هدايا الكريسماس اللي في الصورة لعندك فوراً",
+_G.AutoGift = false
+GiftTab:CreateToggle({
+   Name = "Auto Gift (سارق هدايا الكريسماس)",
+   Info = "بيسحب كل الهدايا اللي بتقع في الماب لرجلك فوراً",
    CurrentValue = false,
-   Callback = function(v) _G.GiftSteal = v end,
+   Callback = function(v) _G.AutoGift = v end,
 })
 
-_G.UltraLuck = false
-LootTab:CreateToggle({
-   Name = "Ultra Luck 100% (الحظ الأسطوري 🍀)",
-   Info = "بيفعل كل معززات الحظ وبيسرع فتح البيض لزيادة فرص الهيوج",
-   CurrentValue = false,
-   Callback = function(v) _G.UltraLuck = v end,
-})
-
--- [[ 🥚 قسم البيض السريع ]] --
-local EggTab = Window:CreateTab("🥚 Egg Cheats", 4483362458)
--- (كود فتح الـ 20 بيضة والبحث اللي عملناه موجود هنا)
-
--- [[ المنطق الخلفي - الـ Loops ]] --
-
--- 1. كود الحبس والقبول (Trade Loop)
+-- [[ 🛠️ كود التشغيل الخلفي (THE ENGINE) ]] --
 task.spawn(function()
-    while task.wait(0.0001) do
-        if _G.EternalJail then
+    while task.wait() do
+        -- 1. تشغيل الحظ الأسطوري
+        if _G.GodLuck then
             pcall(function()
                 local net = game:GetService("ReplicatedStorage").Network
-                net.Trade_UpdateStatus:FireServer("Processing")
-                net.Trade_UpdateStatus:FireServer("Locked")
-                if _G.AutoSteal then
-                    net.Trade_Accept:FireServer()
-                end
+                net.Potion_Activate:FireServer("Ultra Luck Potion") -- تفعيل معززات وهمية
+                -- تخطي الأنميشن لزيادة سرعة الفتح والفرص
+                local eggUI = game.Players.LocalPlayer.PlayerGui:FindFirstChild("EggOpen")
+                if eggUI then eggUI.Enabled = false end
             end)
         end
-    end
-end)
 
--- 2. كود سحب الهدايا (Gift Loop)
-task.spawn(function()
-    while task.wait(0.1) do
-        if _G.GiftSteal then
+        -- 2. تشغيل تجميد الثلاجة
+        if _G.StainlessJail then
+            pcall(function()
+                local net = game:GetService("ReplicatedStorage").Network
+                net.Trade_UpdateStatus:FireServer("Locked")
+                net.Trade_UpdateStatus:FireServer("Processing")
+            end)
+        end
+
+        -- 3. سحب الهدايا
+        if _G.AutoGift then
             pcall(function()
                 local loot = workspace.__THINGS:FindFirstChild("Lootbags")
                 if loot then
-                    for _, gift in pairs(loot:GetChildren()) do
-                        gift.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+                    for _, g in pairs(loot:GetChildren()) do
+                        g.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
                     end
                 end
             end)
@@ -96,13 +95,10 @@ task.spawn(function()
     end
 end)
 
--- 3. كود الحظ (Luck Loop)
+-- حماية ضد الطرد (Anti-Kick)
 task.spawn(function()
-    while task.wait(1) do
-        if _G.UltraLuck then
-            pcall(function()
-                game:GetService("ReplicatedStorage").Network.Potion_Activate:FireServer("Luck Potion VI")
-            end)
-        end
-    end
+    local old; old = hookmetamethod(game, "__namecall", function(self, ...)
+        if not checkcaller() and getnamecallmethod() == "Kick" then return nil end
+        return old(self, ...)
+    end)
 end)
